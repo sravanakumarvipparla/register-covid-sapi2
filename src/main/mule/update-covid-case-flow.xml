@@ -18,6 +18,7 @@ output application/json
 	caseType: payload.covidCase.caseType,
 	firstName: payload.covidCase.firstName,
 	lastName: payload.covidCase.lastName,
+	fullname :  payload.covidCase.firstName ++  " " ++  payload.covidCase.lastName,
 	phone: payload.covidCase.phone,
 	email: payload.covidCase.email,
 	dateOfBirth: payload.covidCase.dateOfBirth as String,
