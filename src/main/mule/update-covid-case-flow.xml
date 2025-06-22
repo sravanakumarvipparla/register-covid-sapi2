@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="update-covid-case-flowFlow" doc:id="462ec6b3-34c1-4134-af93-ea95380523cb" >
+		<http:listener doc:name="Listener" doc:id="5b0ea6e1-8571-47bb-8c09-6babce8f529b" config-ref="HTTP_Listener_config" path="update-covid-sapi2/update-covid"/>
+		<ee:transform doc:name="Transform Message" doc:id="76cfbbaf-a531-4c7e-9cab-53f4cde2bd08" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	source: (payload.covidCase.sourcedefault "") ++ payload.covidCase.source,
+    caseID: payload.covidCase.caseID,
+	caseType: payload.covidCase.caseType,
+	firstName: payload.covidCase.firstName,
+	lastName: payload.covidCase.lastName,
+	phone: payload.covidCase.phone,
+	email: payload.covidCase.email,
+	dateOfBirth: payload.covidCase.dateOfBirth as String,
+	nationalID: payload.covidCase.nationalID,
+	nationalIDType: payload.covidCase.nationalIDType,
+	address: {
+		streetAddress: payload.covidCase.address.streetAddress,
+		city: payload.covidCase.address.city,
+		state: payload.covidCase.address.state,
+		postal: payload.covidCase.address.postal as String,
+		country: payload.covidCase.address.country
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ac0d7ce5-8b23-4fd1-9108-aa4927d0ad30" message="#[payload]"/>
+	</flow>
+</mule>
